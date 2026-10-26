@@ -4,9 +4,9 @@ import re
 import sys
 
 root = Path(__file__).resolve().parents[1]
-allowed_top = {'.gitignore', '.gitattributes', 'README.md', 'BUILD.md', 'LICENSE',
+allowed_top = {'.gitignore', '.gitattributes', 'README.md', 'BUILD.md', 'FIRMWARE.md', 'LICENSE',
                'NOTICE', 'sources.lock.json', 'SHA256SUMS', 'PUBLICATION-AUDIT.json',
-               'build', 'config', 'overlay', 'patches', 'reference', 'tests', 'tools'}
+               'build', 'config', 'overlay', 'public-overlay', 'patches', 'reference', 'tests', 'tools'}
 blocked_suffix = {'.bin', '.uimage', '.ko', '.dtb', '.gz', '.xz', '.zip', '.7z', '.log', '.key', '.pem'}
 patterns = [
     ('private-key', re.compile(r'-----BEGIN (?:OPENSSH |RSA |EC |DSA )?PRIVATE KEY-----')),

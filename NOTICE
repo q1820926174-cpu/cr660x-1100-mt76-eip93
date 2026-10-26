@@ -5,5 +5,8 @@ The reference DTS retains its GPL-2.0-or-later OR MIT SPDX license.
 Kernel/backports/mt76 patches retain the corresponding upstream licenses.
 See LICENSE for GPL version 2; see each upstream project for original notices.
 No PB-Boot bootloader source or binary is included or claimed as our work.
-No vendor firmware blob or proprietary wireless/acceleration module is redistributed.
+No binary blobs are checked into the source repository. Complete release images
+include required upstream MediaTek radio firmware under its own terms, plus
+base-system components retained from the identified public upstream image.
+The proprietary mt_wifi kernel module is removed from the public image.
 The upstream links and revision pins describe dependencies, not relicensing.

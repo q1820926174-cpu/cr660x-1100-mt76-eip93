@@ -2,7 +2,7 @@
   "status": "PASS",
   "publication_mode": "source-only allowlist in fresh repository",
   "private_values_compared": 26,
-  "text_files_checked": 31,
+  "text_files_checked": 40,
   "included_images": 0,
   "included_device_backups": 0,
   "checks": [

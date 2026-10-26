@@ -1,5 +1,5 @@
 {
-  "edition": "experimental-source-20261026",
+  "edition": "experimental-full-20261026",
   "target": "xiaomi,mi-router-cr660x",
   "cpu_hz": 1100000000,
   "kernel": "5.10.252",
@@ -42,11 +42,18 @@
     "wireless_regdb": {
       "url": "https://sources.openwrt.org/wireless-regdb-2026.09.03.tar.xz",
       "sha256": "b22e0901227b820cd1c280abe681a15b773a5103a5e10dc442e94ebb34cbf58d"
+    },
+    "public_base": {
+      "share_url": "https://yun.heleguo.cn/s/o9GTK",
+      "path": "5.4/openwrt-ramips-mt7621-xiaomi_mi-router-cr660x-squashfs-sysupgrade.bin",
+      "sha256": "e7d31ec39f0726f50524eb2a09b060143ec75aa2e492e1017c2ad3af3c91cecc",
+      "bytes": 11838594
     }
   },
-  "public_binary_release": false,
+  "public_binary_release": true,
   "known_issues": [
     "2.4GHz association failure unresolved",
     "AES benefit and CPU-load impact on production traffic not established"
-  ]
+  ],
+  "public_image_boot_tested": false
 }

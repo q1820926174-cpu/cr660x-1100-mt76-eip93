@@ -1,0 +1,11 @@
+config radio 'band0'
+	option ssid 'CR660X_2G'
+	option key 'cr660x-setup'
+	option country 'CN'
+	option channel '6'
+
+config radio 'band1'
+	option ssid 'CR660X_5G'
+	option key 'cr660x-setup'
+	option country 'CN'
+	option channel '36'

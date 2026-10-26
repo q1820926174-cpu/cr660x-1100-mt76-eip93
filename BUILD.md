@@ -1,6 +1,6 @@
 # 构建说明与边界
 
-这些脚本记录目前已完成的组件集成。它们依赖已经准备好的 LEDE Linux 5.10.252 构建树和 SDK；不是完整固件的一键构建系统。独立干净环境的端到端重建尚未验证。公开包不依赖私人系统快照。
+这些脚本依赖已准备好的 LEDE Linux 5.10.252 构建树和 SDK，完成组件编译后可以组装完整公开镜像。完整镜像的根文件系统取自哈希锁定的公开上游 5.4 固件，不依赖私人系统快照。这里不是将所有上游应用都从源码重新编译的独立构建系统；从空环境准备全部依赖的端到端流程仍未验证。
 
 ## 工作目录
 
@@ -70,7 +70,9 @@ AES-only 配置及 256 字节软件回退阈值见脚本。测试程序包含公
 
 必须从上游构建出不含个人信息的 rootfs，再把新模块、工具、固件及 `overlay/` 以正确权限整合进去。原生模块启动顺序、安装位置和必要的软件包见 `build/INTEGRATION.md`。不要使用实机导出的 merged rootfs、overlay 或备份作为公开 rootfs。
 
-Wi-Fi profile 的 `SSID1`、`WPAPSK1`、`CountryCode`、`Channel` 由配置生成器读取。公开发行时应让用户首次设置私有值；不要复制开发者 profile，也不要写入统一默认密码。当前 overlay 尚不包含首次配置页面。未配置合法 profile 时服务会退出，不会生成无密码 AP。
+原兼容模式从 Wi-Fi profile 读取 `SSID1`、`WPAPSK1`、`CountryCode`、`Channel`。不要复制开发者 profile。未配置合法 profile 或公开版 UCI 配置时服务会退出，不会生成无密码 AP。
+
+以上是原兼容 profile 模式。完整公开版使用 `public-overlay/etc/config/cr660x_native` 和新 LuCI 页面，初始值与登录方式明确列在 [FIRMWARE.md](FIRMWARE.md)。配置生成器优先读取此文件，支持 UCI 引号转义，不依赖额外的 libuci-lua。初始 Wi-Fi 密码用于安装，须由使用者修改。
 
 用上游 `mksquashfs4` 生成 squashfs，再运行同一 LEDE 树的 `scripts/ubinize-image.sh`：
 
@@ -84,6 +86,25 @@ python3 tools/pack-pbboot.py \
   --output out/cr660x-experimental-factory.bin
 ```
 
-这个打包工具验证格式，**不会检查输入 rootfs 是否藏有私人数据**。格式正确也不保证可启动。公开二进制之前，还需要解包检查整个 rootfs、许可证/对应源码审计及实机恢复测试。现有私人镜像未经过这一发行流程，禁止直接上传。
+这个低级打包工具验证格式，**不会检查任意输入 rootfs 是否藏有私人数据**。格式正确也不保证可启动。私人恢复镜像禁止直接上传。
 
 PB-Boot 需要 firmware 格式：4MiB 内核分区填充后接 UBI；不能将 sysupgrade tar 当作此格式。工具不会写 Bootloader/Factory，也没有远程刷机命令。实机更新必须确认板型、布局及恢复入口。
+
+## 当前完整公开版的组装入口
+
+先完成前述匹配组件的构建，再执行：
+
+```sh
+python3 build/fetch-public-base.py --output "$CR660X_WORK/upstream-5.4-sysupgrade.bin"
+bash build/prepare-public-kernel.sh
+python3 build/build-public-firmware.py \
+  --base-sysupgrade "$CR660X_WORK/upstream-5.4-sysupgrade.bin" \
+  --components "$CR660X_WORK" \
+  --kernel "$CR660X_OUTPUT/kernel.uimage" \
+  --work "$CR660X_WORK/public-assembly-new" \
+  --output "$CR660X_OUTPUT/cr660x-1100-mt76-aes-public-experimental-factory.bin"
+```
+
+组装目录必须不存在。使用系统 `squashfs-tools` 的 `unsquashfs` 解包，以避免旧 SDK squashfskit 的退出状态问题。脚本校验原始公开输入哈希，安装两个 overlay，移除 vendor 无线模块、厂商默认密码脚本和预置身份密钥，核对所有模块符号，并通过 QEMU 执行目标 Lua。`prepare-public-kernel.sh` 从公开 DTS 重新编译设备树，使用通用编译身份重新链接内核。
+
+本次 Release 的最终 `.bin` 另外解包并完成全部文件、空白覆盖层和敏感值审计；不等于完成实机首次启动。具体检查边界和完整软件包清单附在 Release。

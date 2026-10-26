@@ -2,6 +2,57 @@
 local root = arg[1] or ''
 local output = assert(arg[2], 'output directory required')
 local function profile(band)
+    local marker = io.open(root .. '/etc/config/cr660x_native', 'r')
+    if marker then
+        -- Read UCI's quoted tokens without executing a shell or requiring libuci-lua.
+        -- The public base uses an ubus-backed LuCI UCI layer rather than uci.so.
+        local function tokens(line)
+            local result, word, quote, started = {}, '', nil, false
+            local index = 1
+            local function finish()
+                if started then result[#result+1] = word end
+                word, started = '', false
+            end
+            while index <= #line do
+                local ch = line:sub(index,index)
+                if quote == "'" then
+                    if ch == quote then quote = nil else word = word .. ch end
+                elseif ch == '\\' then
+                    index = index + 1
+                    assert(index <= #line, 'invalid UCI escape')
+                    word = word .. line:sub(index,index)
+                    started = true
+                elseif quote then
+                    if ch == quote then quote = nil else word = word .. ch end
+                elseif ch == "'" or ch == '"' then
+                    quote, started = ch, true
+                elseif ch:match('%s') then
+                    finish()
+                elseif ch == '#' and not started then
+                    break
+                else
+                    word, started = word .. ch, true
+                end
+                index = index + 1
+            end
+            assert(not quote, 'unterminated UCI quote')
+            finish()
+            return result
+        end
+        local section, values = nil, {}
+        for line in marker:lines() do
+            local t = tokens(line)
+            if t[1] == 'config' then section = t[3] end
+            if t[1] == 'option' and section == 'band' .. band then values[t[2]] = t[3] end
+        end
+        marker:close()
+        return {
+            SSID1 = values.ssid,
+            WPAPSK1 = values.key,
+            CountryCode = values.country,
+            Channel = values.channel
+        }
+    end
     local file = assert(io.open(root .. '/etc/wireless/mediatek/mt7915.dbdc.b' .. band .. '.dat', 'r'))
     local values = {}
     for line in file:lines() do
@@ -14,8 +65,9 @@ end
 for band = 0, 1 do
     local p = profile(band)
     local ssid, pass = assert(p.SSID1), assert(p.WPAPSK1)
-    assert(#ssid > 0 and #ssid <= 32, 'invalid SSID length')
+    assert(#ssid > 0 and #ssid <= 32 and not ssid:find('[%c]'), 'invalid SSID length')
     assert((#pass >= 8 and #pass <= 63) or (#pass == 64 and pass:match('^%x+$')), 'invalid WPA key length')
+    assert(not pass:find('[%c]'), 'invalid WPA key characters')
     local country = p.CountryCode or 'CN'
     assert(country:match('^%u%u$'), 'invalid country code')
     local channel = assert(tonumber(p.Channel), 'channel must be fixed')
