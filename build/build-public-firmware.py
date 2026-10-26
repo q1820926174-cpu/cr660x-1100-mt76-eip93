@@ -29,6 +29,7 @@ def main():
     parser.add_argument('--work', type=Path, required=True, help='New empty build directory')
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--unsquashfs', default='unsquashfs', help='System squashfs-tools extractor')
+    parser.add_argument('--plugin-bundle', type=Path, help='Separately privacy-reviewed package programs and clean defaults')
     args = parser.parse_args()
     assert sha(args.base_sysupgrade) == BASE_SHA256, 'Input must be the pinned public upstream 5.4 image'
     assert not args.work.exists(), 'Use a new build directory; never reuse a device filesystem'
@@ -151,6 +152,44 @@ exit 0
             for path in (root/'usr/lib/opkg/info').glob(name+'.*'):
                 path.unlink()
 
+    plugin_report = None
+    if args.plugin_bundle:
+        locked = json.loads((KIT/'plugins.lock.json').read_text())
+        assert sha(args.plugin_bundle)==locked['bundle_sha256'], 'Plugin bundle differs from the reviewed release'
+        with tarfile.open(args.plugin_bundle) as archive:
+            plugin_report = json.load(archive.extractfile('plugins-manifest.json'))
+            for item in plugin_report['files']:
+                relative = item['path']
+                assert not Path(relative).is_absolute() and '..' not in Path(relative).parts
+                member = archive.getmember('rootfs/'+relative)
+                dest = root/relative
+                dest.parent.mkdir(parents=True,exist_ok=True)
+                assert root.resolve() in dest.parent.resolve().parents
+                if dest.is_symlink(): dest.unlink()
+                if item['type']=='file':
+                    assert member.isfile()
+                    data=archive.extractfile(member).read()
+                    assert hashlib.sha256(data).hexdigest()==item['sha256']
+                    if dest.exists():
+                        assert dest.read_bytes()==data, 'Plugin attempts to replace clean base program: '+relative
+                    else:
+                        dest.write_bytes(data);dest.chmod(item['mode'])
+                else:
+                    assert member.issym() and member.linkname==item['target']
+                    assert not dest.exists(),relative
+                    dest.symlink_to(member.linkname)
+        blocks=status_path.read_text().strip().split('\n\n')
+        names={re.search(r'^Package: (.+)$',block,re.M)[1] for block in blocks}
+        for package in plugin_report['packages']:
+            name=package['Package']
+            assert name not in names,name
+            control=''.join(key+': '+value+'\n' for key,value in package.items())
+            blocks.append(control+'Status: install user installed\n')
+            write('usr/lib/opkg/info/'+name+'.control',control)
+            files=[item['path'] for item in plugin_report['files'] if item['package']==name]
+            write('usr/lib/opkg/info/'+name+'.list',''.join('/'+relative+'\n' for relative in files))
+        status_path.write_text('\n\n'.join(block.strip() for block in blocks)+'\n\n')
+
     exports = {line.split()[1] for line in (baseline/'kernel/Module.symvers').read_text().splitlines()}
     modules = list((root/'lib/modules/5.10.252').glob('*.ko'))
     # All module exports, not just the new radio modules, must be available.
@@ -196,6 +235,7 @@ exit 0
         'included':['LuCI web management','DHCP/DNS/firewall','WAN DHCP and PPPoE support','native Wi-Fi settings page','1100MHz kernel','mt7915e','EIP-93 AES'],
         'excluded':['personal configurations','proxy subscriptions/nodes','device Factory/EEPROM/NVRAM/Bdata','vendor mt_wifi module'],
         'module_count_checked':len(modules), 'known_issues':['2.4GHz association unresolved','fresh image has not booted on hardware','AES production CPU/throughput benefit unproven'],
+        'plugin_packages':[{key:package[key] for key in ['Package','Version']} for package in plugin_report['packages']] if plugin_report else [],
     }
     args.output.with_suffix('.verification.json').write_text(json.dumps(report,indent=2)+'\n')
     print(json.dumps(report,indent=2))

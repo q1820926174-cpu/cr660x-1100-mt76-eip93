@@ -1,0 +1,178 @@
+{
+  "bundle_sha256": "f41125cfa10848a07b14dd36f61a038bf11c08d391f8a071f6a7a74170e6848a",
+  "bundle_bytes": 15387569,
+  "bundle_release_url": "https://github.com/q1820926174-cpu/cr660x-1100-mt76-eip93/releases/download/v0.3.0-plugins-experimental/cr660x-clean-plugin-programs.tar.gz",
+  "passwall_source_url": "https://github.com/Openwrt-Passwall/openwrt-passwall/tree/32ac46d42911453da27ced0247e70156016e0a4f",
+  "passwall_source_sha256": "2e161036b754411a51be5e66dad8d149e1ab613e7207b528da027b092a261ad5",
+  "packages": [
+    {
+      "Package": "chinadns-ng",
+      "Version": "2025.08.09-r1"
+    },
+    {
+      "Package": "coreutils",
+      "Version": "9.7-r1"
+    },
+    {
+      "Package": "coreutils-base64",
+      "Version": "9.7-r1"
+    },
+    {
+      "Package": "coreutils-nohup",
+      "Version": "9.7-r1"
+    },
+    {
+      "Package": "ddnsto",
+      "Version": "4.2.1~1b0c-r4"
+    },
+    {
+      "Package": "dns2socks",
+      "Version": "2.1-r1"
+    },
+    {
+      "Package": "dns2tcp",
+      "Version": "1.1.2-r1"
+    },
+    {
+      "Package": "io",
+      "Version": "4"
+    },
+    {
+      "Package": "ipt2socks",
+      "Version": "1.1.4-r1"
+    },
+    {
+      "Package": "libev",
+      "Version": "4.33-r2"
+    },
+    {
+      "Package": "libevent2-7",
+      "Version": "2.1.12-r2"
+    },
+    {
+      "Package": "libltdl7",
+      "Version": "2.4.7-r1"
+    },
+    {
+      "Package": "liblua5.4-5.4",
+      "Version": "5.4.7-r1"
+    },
+    {
+      "Package": "libmbedtls21",
+      "Version": "3.6.5-r1"
+    },
+    {
+      "Package": "libpcap1",
+      "Version": "1.10.5-r2"
+    },
+    {
+      "Package": "libpcre2",
+      "Version": "10.42-r1"
+    },
+    {
+      "Package": "libreadline8",
+      "Version": "8.2-r2"
+    },
+    {
+      "Package": "libsodium",
+      "Version": "1.0.19-r1"
+    },
+    {
+      "Package": "libstdcpp6",
+      "Version": "13.3.0-r4"
+    },
+    {
+      "Package": "libubox20240329",
+      "Version": "2025.07.23~49056d17-r1"
+    },
+    {
+      "Package": "libuci-lua",
+      "Version": "2025.01.20~16ff0bad-r1"
+    },
+    {
+      "Package": "libuci20250120",
+      "Version": "2025.01.20~16ff0bad-r1"
+    },
+    {
+      "Package": "libudns",
+      "Version": "0.4-r1"
+    },
+    {
+      "Package": "libyaml",
+      "Version": "0.2.5-r1"
+    },
+    {
+      "Package": "luci-app-ddnsto",
+      "Version": "4.0.3-r1"
+    },
+    {
+      "Package": "luci-app-passwall",
+      "Version": "26.5.11-r125"
+    },
+    {
+      "Package": "luci-app-vlmcsd",
+      "Version": "26.126.28706~6ac4a03"
+    },
+    {
+      "Package": "luci-i18n-ddnsto-zh-cn",
+      "Version": "26.119.35588~d3ed445"
+    },
+    {
+      "Package": "lyaml",
+      "Version": "6.2.7-r2"
+    },
+    {
+      "Package": "microsocks",
+      "Version": "1.0.5-r2"
+    },
+    {
+      "Package": "resolveip",
+      "Version": "2"
+    },
+    {
+      "Package": "rp-pppoe-common",
+      "Version": "4.0-r1"
+    },
+    {
+      "Package": "shadowsocks-libev-ss-local",
+      "Version": "3.3.5-r2"
+    },
+    {
+      "Package": "shadowsocks-libev-ss-redir",
+      "Version": "3.3.5-r2"
+    },
+    {
+      "Package": "shadowsocksr-libev-ssr-local",
+      "Version": "2.5.6-r1"
+    },
+    {
+      "Package": "shadowsocksr-libev-ssr-redir",
+      "Version": "2.5.6-r1"
+    },
+    {
+      "Package": "simple-obfs-client",
+      "Version": "0.0.5-r1"
+    },
+    {
+      "Package": "tcpdump",
+      "Version": "4.99.5-r1"
+    },
+    {
+      "Package": "tcping",
+      "Version": "0.3-r1"
+    },
+    {
+      "Package": "unzip",
+      "Version": "6.0-r8"
+    },
+    {
+      "Package": "vlmcsd",
+      "Version": "2020.03.30~e5990804-r8"
+    },
+    {
+      "Package": "xray-core",
+      "Version": "26.5.9-r10"
+    }
+  ],
+  "private_config_included": false
+}

@@ -4,8 +4,8 @@ import re
 import sys
 
 root = Path(__file__).resolve().parents[1]
-allowed_top = {'.gitignore', '.gitattributes', 'README.md', 'BUILD.md', 'FIRMWARE.md', 'LICENSE',
-               'NOTICE', 'sources.lock.json', 'SHA256SUMS', 'PUBLICATION-AUDIT.json',
+allowed_top = {'.gitignore', '.gitattributes', 'README.md', 'BUILD.md', 'FIRMWARE.md', 'PLUGINS.md', 'LICENSE',
+               'NOTICE', 'sources.lock.json', 'plugins.lock.json', 'SHA256SUMS', 'PUBLICATION-AUDIT.json',
                'build', 'config', 'overlay', 'public-overlay', 'patches', 'reference', 'tests', 'tools'}
 blocked_suffix = {'.bin', '.uimage', '.ko', '.dtb', '.gz', '.xz', '.zip', '.7z', '.log', '.key', '.pem'}
 patterns = [

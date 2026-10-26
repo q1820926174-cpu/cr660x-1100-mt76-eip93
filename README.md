@@ -2,9 +2,9 @@
 
 这是小米 CR660x 的实验固件改动与打包工具，适用于 PB-Boot 的 **firmware 更新入口**。它不是 PB-Boot 引导程序，也不包含引导程序二进制或源码。
 
-提供源码、内核配置、版本锁定、原生无线启动服务，以及 **PB-Boot 可识别的完整 firmware `.bin`**，包含内核、完整根文件系统、LuCI 后台和默认网络配置。[完整镜像下载](https://github.com/q1820926174-cpu/cr660x-1100-mt76-eip93/releases/tag/v0.2.0-full-experimental)，使用说明见 [FIRMWARE.md](FIRMWARE.md)。
+提供源码、内核配置、版本锁定、原生无线启动服务，以及 **PB-Boot 可识别的完整 firmware `.bin`**，包含内核、完整根文件系统、LuCI 后台、默认网络配置和现有插件。[含插件完整镜像下载](https://github.com/q1820926174-cpu/cr660x-1100-mt76-eip93/releases/tag/v0.3.0-plugins-experimental)，使用说明见 [FIRMWARE.md](FIRMWARE.md)，插件范围见 [PLUGINS.md](PLUGINS.md)。
 
-公开镜像从原作者公开的 5.4 基础固件重新打包，整合这里的内核、驱动及配置界面，未使用私人 merged rootfs 或配置备份。**仅完成离线格式、模块、目标用户态程序和隐私检查，尚未刷入实机验证此公开镜像的首次启动。2.4GHz 故障仍未解决，不能当作稳定发行版。**
+公开镜像从原作者公开的 5.4 基础固件重新打包，整合内核、驱动、配置界面及经过程序文件白名单筛选的插件。插件的私人配置、运行记录和自定义规则不会复制；Passwall 默认配置及规则从匹配的公开源码重建。未将私人 merged rootfs 或配置备份整体作为底包。**仅完成离线格式、模块、目标用户态程序和隐私检查，尚未刷入实机验证此公开镜像的首次启动。2.4GHz 故障仍未解决，不能当作稳定发行版。**
 
 ## 内容与实测状态
 
@@ -29,6 +29,7 @@
 - `config/`：当前内核配置。
 - `overlay/`：当前原生 hostapd/procd 启动代码。
 - `public-overlay/`：公开版 LAN/WAN、Wi-Fi 初始配置和 LuCI 原生驱动设置页。
+- `plugins.lock.json`：经隐私审核的插件程序组件包及版本锁定。
 - `build/`：从实际构建脚本整理的参数化版本；环境准备见 [BUILD.md](BUILD.md)。
 - `tools/pack-pbboot.py`：从独立提供的内核及 UBI 文件生成 PB-Boot firmware 镜像，不连接设备。
 - `tests/`：AES 自检代码与公开文件检查。

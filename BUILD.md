@@ -108,3 +108,15 @@ python3 build/build-public-firmware.py \
 组装目录必须不存在。使用系统 `squashfs-tools` 的 `unsquashfs` 解包，以避免旧 SDK squashfskit 的退出状态问题。脚本校验原始公开输入哈希，安装两个 overlay，移除 vendor 无线模块、厂商默认密码脚本和预置身份密钥，核对所有模块符号，并通过 QEMU 执行目标 Lua。`prepare-public-kernel.sh` 从公开 DTS 重新编译设备树，使用通用编译身份重新链接内核。
 
 本次 Release 的最终 `.bin` 另外解包并完成全部文件、空白覆盖层和敏感值审计；不等于完成实机首次启动。具体检查边界和完整软件包清单附在 Release。
+
+## 含现有插件的完整镜像
+
+下载 `plugins.lock.json` 指定的 `cr660x-clean-plugin-programs.tar.gz`，核对锁定 SHA256，然后在完整固件组装命令中增加：
+
+```sh
+--plugin-bundle /path/to/cr660x-clean-plugin-programs.tar.gz
+```
+
+组装器会核对组件包哈希、每个文件的哈希、路径边界及文件类型，不允许插件覆盖不同内容的干净系统程序。包中附软件包/文件归属清单，安装时重新登记 opkg 元数据。
+
+`build/assemble-plugin-programs.py` 记录组件提取步骤，需提供安装文件清单和匹配的公开 Passwall 源码。它的输出还必须单独做敏感值和解包审核，不能把“按清单提取”理解为自动保证任意系统无隐私。公开 Release 已提供审核后的组件包，无需共享或取得作者私人原始备份。
