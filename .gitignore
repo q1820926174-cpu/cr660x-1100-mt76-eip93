@@ -1,0 +1,12 @@
+/work/
+/out/
+/private/
+*.bin
+*.uimage
+*.ko
+*.dtb
+*.tar*
+*.log
+*.key
+*.pem
+__pycache__/

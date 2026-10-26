@@ -1,0 +1,32 @@
+#!/bin/sh
+set -eu
+umask 077
+run=/run/cr660x-mt76
+mkdir -p "$run"
+for module in cmac compat cfg80211 mac80211 mt76 mt76-connac-lib mt7915e; do
+    modprobe "$module"
+done
+phy2g=''; phy5g=''
+for phy in /sys/class/ieee80211/*; do
+    test -d "$phy" || continue
+    name=${phy##*/}
+    iw phy "$name" info >"$run/$name.info"
+    if grep -Eq '2412([.]0)? MHz' "$run/$name.info"; then phy2g=$name; fi
+    if grep -Eq '5180([.]0)? MHz' "$run/$name.info"; then phy5g=$name; fi
+done
+test -n "$phy2g" && test -n "$phy5g" && test "$phy2g" != "$phy5g" || {
+    logger -t cr660x-mt76 'Two expected radio PHYs not registered; inspect dmesg, no vendor hot-switch attempted'
+    exit 1
+}
+for iface in $(iw dev | awk '$1 == "Interface" {print $2}'); do
+    case "$iface" in wlan[0-9]*|ra0|rax0) iw dev "$iface" del;; esac
+done
+iw phy "$phy2g" interface add ra0 type __ap
+iw phy "$phy5g" interface add rax0 type __ap
+count=0
+while [ ! -d /sys/class/net/br-lan ]; do
+    count=$((count+1)); test "$count" -lt 20 || exit 1
+    sleep 1
+done
+lua /usr/libexec/cr660x-mt76-config.lua '' "$run"
+chmod 600 "$run/hostapd-0.conf" "$run/hostapd-1.conf"

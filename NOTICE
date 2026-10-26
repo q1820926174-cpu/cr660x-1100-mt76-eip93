@@ -1,0 +1,9 @@
+This repository contains experimental integration code and source patches.
+Original integration scripts and tests: GPL-2.0-or-later.
+The CPU overclock header explicitly marked GPL-2.0-only retains that license.
+The reference DTS retains its GPL-2.0-or-later OR MIT SPDX license.
+Kernel/backports/mt76 patches retain the corresponding upstream licenses.
+See LICENSE for GPL version 2; see each upstream project for original notices.
+No PB-Boot bootloader source or binary is included or claimed as our work.
+No vendor firmware blob or proprietary wireless/acceleration module is redistributed.
+The upstream links and revision pins describe dependencies, not relicensing.

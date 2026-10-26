@@ -1,0 +1,9 @@
+#!/bin/sh
+case "${1:-up}" in
+    up) exec /etc/init.d/cr660x-mt76 start;;
+    down) exec /etc/init.d/cr660x-mt76 stop;;
+    reload|restart|reload_legacy|reset) exec /etc/init.d/cr660x-mt76 restart;;
+    status) exec iw dev;;
+    detect|config) echo 'CR660x native mt76 uses /etc/wireless/mediatek/mt7915.dbdc.b{0,1}.dat';;
+    *) echo 'Usage: wifi [up|down|reload|restart|status]' >&2; exit 1;;
+esac

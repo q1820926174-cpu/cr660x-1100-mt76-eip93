@@ -1,0 +1,25 @@
+#!/bin/sh /etc/rc.common
+USE_PROCD=1
+START=25
+STOP=89
+start_service() {
+    if ! pidof hostapd >/dev/null || [ ! -d /sys/class/net/ra0 ] || [ ! -d /sys/class/net/rax0 ]; then
+        /usr/libexec/cr660x-mt76-prepare >>/tmp/cr660x-mt76-init.log 2>&1 || return 1
+    fi
+    procd_open_instance
+    procd_set_param command /usr/sbin/hostapd /run/cr660x-mt76/hostapd-0.conf /run/cr660x-mt76/hostapd-1.conf
+    procd_set_param stdout 1
+    procd_set_param stderr 1
+    procd_close_instance
+}
+stop_service() {
+    for count in 1 2 3 4 5; do
+        pidof hostapd >/dev/null || break
+        sleep 1
+    done
+    for iface in ra0 rax0; do iw dev "$iface" del 2>/dev/null || true; done
+}
+reload_service() {
+    stop
+    start
+}

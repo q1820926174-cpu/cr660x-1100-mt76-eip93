@@ -1,0 +1,23 @@
+#!/bin/sh /etc/rc.common
+START=16
+start() {
+    /usr/libexec/eip93-aes-selftest hardware >/tmp/eip93-aes-boot-selftest.log 2>&1 &
+    test_pid=$!
+    (
+        sleep 15
+        if [ "$(readlink /proc/$test_pid/exe 2>/dev/null)" = /usr/libexec/eip93-aes-selftest ]; then
+            kill -TERM "$test_pid" 2>/dev/null
+        fi
+    ) &
+    timer_pid=$!
+    wait "$test_pid"
+    result=$?
+    kill "$timer_pid" 2>/dev/null || true
+    wait "$timer_pid" 2>/dev/null || true
+    if [ "$result" -eq 0 ]; then
+        logger -t eip93-aes 'AES hardware known-answer selftest passed'
+    else
+        logger -t eip93-aes "AES hardware selftest failed: $result; inspect /tmp/eip93-aes-boot-selftest.log"
+    fi
+    return 0
+}

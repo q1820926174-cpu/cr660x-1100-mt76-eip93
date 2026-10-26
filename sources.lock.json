@@ -1,0 +1,52 @@
+{
+  "edition": "experimental-source-20261026",
+  "target": "xiaomi,mi-router-cr660x",
+  "cpu_hz": 1100000000,
+  "kernel": "5.10.252",
+  "toolchain": "OpenWrt SDK 21.02.7, GCC 8.4.0, musl, mipsel_24kc",
+  "required_kcflags": "-fno-caller-saves",
+  "sources": {
+    "lede": {
+      "url": "https://github.com/Heleguo/lede",
+      "commit": "0a36e68f196fbb56a9e45cb608e9b7560683ddcf"
+    },
+    "openwrt_patches": {
+      "url": "https://github.com/openwrt/openwrt",
+      "commit": "4e1d1b7df0ce6fa96d7462dc883917682f428046"
+    },
+    "mt76": {
+      "url": "https://sources.openwrt.org/mt76-2023-09-11-bdf8ea71.tar.xz",
+      "sha256": "a080a83068abc204d1f563022391625875ef77deda14be49888c179ff78fa8c8",
+      "commit": "bdf8ea71700746c634c064d6477aa143f821d6f6"
+    },
+    "backports": {
+      "url": "https://sources.openwrt.org/backports-5.15.162-1.tar.xz",
+      "sha256": "00444ab103f5e4ce34d3ba7895289d2b78b84f14a35f9021b60cb1a0270dfec5"
+    },
+    "eip93": {
+      "url": "https://github.com/vschagen/mtk-eip93",
+      "commit": "ca08387bf8352652129019bb19e2423ab313d5cb"
+    },
+    "hostapd": {
+      "url": "https://sources.openwrt.org/hostapd-2023-06-22-599d00be.tar.xz",
+      "sha256": "828810c558ea181e45ed0c8b940f5c41e55775e2979a15aed8cf0ab17dd7723c"
+    },
+    "libnl_tiny": {
+      "url": "https://github.com/openwrt/libnl-tiny",
+      "commit": "40493a655d8caa2ccf5206dde1e733abe2920432"
+    },
+    "iw": {
+      "url": "https://sources.openwrt.org/iw-6.9.tar.xz",
+      "sha256": "3f2db22ad41c675242b98ae3942dbf3112548c60a42ff739210f2de4e98e4894"
+    },
+    "wireless_regdb": {
+      "url": "https://sources.openwrt.org/wireless-regdb-2026.09.03.tar.xz",
+      "sha256": "b22e0901227b820cd1c280abe681a15b773a5103a5e10dc442e94ebb34cbf58d"
+    }
+  },
+  "public_binary_release": false,
+  "known_issues": [
+    "2.4GHz association failure unresolved",
+    "AES benefit and CPU-load impact on production traffic not established"
+  ]
+}

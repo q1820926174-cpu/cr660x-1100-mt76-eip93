@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "publication_mode": "source-only allowlist in fresh repository",
+  "private_values_compared": 26,
+  "text_files_checked": 31,
+  "included_images": 0,
+  "included_device_backups": 0,
+  "checks": [
+    "local private configuration value comparison",
+    "root password hash exclusion",
+    "Wi-Fi credential and SSID exclusion",
+    "known device identifier exclusion",
+    "generic token/key/URL/hash/address/path patterns",
+    "source-only path and suffix allowlist"
+  ],
+  "limits": [
+    "Pattern matching alone cannot prove absence of every possible secret; source-only manual selection is the primary control",
+    "This audit does not certify any firmware binary or root filesystem"
+  ]
+}
